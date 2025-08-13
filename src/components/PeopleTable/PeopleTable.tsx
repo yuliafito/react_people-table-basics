@@ -1,16 +1,20 @@
 import { FC } from 'react';
 import { Person } from '../../types';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { PersonLink } from '../PersonLink';
 
 type Props = {
   people: Person[];
+  selectedSlug: string | null;
+  onSelectPerson: (slug: string) => void;
 };
 
-export const PeopleTable: FC<Props> = ({ people }) => {
-  const { slug } = useParams<{ slug: string }>();
-
+export const PeopleTable: FC<Props> = ({
+  people,
+  selectedSlug,
+  onSelectPerson,
+}) => {
   return (
     <table
       data-cy="peopleTable"
@@ -33,7 +37,7 @@ export const PeopleTable: FC<Props> = ({ people }) => {
             data-cy="person"
             key={person.slug}
             className={classNames({
-              'has-background-warning': person.slug === slug,
+              'has-background-warning': person.slug === selectedSlug,
             })}
           >
             <td>
@@ -42,6 +46,7 @@ export const PeopleTable: FC<Props> = ({ people }) => {
                 className={classNames({
                   'has-text-danger': person.sex === 'f',
                 })}
+                onClick={() => onSelectPerson(person.slug)}
               >
                 {person.name}
               </Link>
@@ -52,10 +57,18 @@ export const PeopleTable: FC<Props> = ({ people }) => {
             <td>{person.died}</td>
 
             <td>
-              <PersonLink name={person.motherName} people={people} />
+              <PersonLink
+                name={person.motherName}
+                people={people}
+                onSelectPerson={onSelectPerson}
+              />
             </td>
             <td>
-              <PersonLink name={person.fatherName} people={people} />
+              <PersonLink
+                name={person.fatherName}
+                people={people}
+                onSelectPerson={onSelectPerson}
+              />
             </td>
           </tr>
         ))}

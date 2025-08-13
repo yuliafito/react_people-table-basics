@@ -3,11 +3,15 @@ import { Loader } from '../Loader';
 import { PeopleTable } from '../PeopleTable';
 import { getPeople } from '../../api';
 import { Person } from '../../types';
+import { useParams } from 'react-router-dom';
 
 export const PeoplePage = () => {
   const [people, setPeople] = useState<Person[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isErrorMessage, setIsErrorMessage] = useState(false);
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+
+  const { slug } = useParams<{ slug?: string }>();
 
   useEffect(() => {
     setIsLoading(true);
@@ -17,6 +21,12 @@ export const PeoplePage = () => {
       .catch(() => setIsErrorMessage(true))
       .finally(() => setIsLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (slug) {
+      setSelectedSlug(slug);
+    }
+  }, [slug]);
 
   return (
     <div className="block">
@@ -36,7 +46,11 @@ export const PeoplePage = () => {
         <h1 className="title">People Page</h1>
 
         {!isLoading && !isErrorMessage && people.length > 0 && (
-          <PeopleTable people={people} />
+          <PeopleTable
+            people={people}
+            selectedSlug={selectedSlug}
+            onSelectPerson={setSelectedSlug}
+          />
         )}
       </div>
     </div>

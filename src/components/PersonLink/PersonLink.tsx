@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom';
 type Props = {
   name?: string | null;
   people: Person[];
+  onSelectPerson?: (slug: string) => void;
 };
 
-export const PersonLink: FC<Props> = ({ name, people }) => {
+export const PersonLink: FC<Props> = ({ name, people, onSelectPerson }) => {
   const foundPerson = people.find(p => p.name === name);
 
   if (!name) {
@@ -23,6 +24,7 @@ export const PersonLink: FC<Props> = ({ name, people }) => {
     <Link
       to={`/people/${foundPerson.slug}`}
       className={classNames({ 'has-text-danger': foundPerson.sex === 'f' })}
+      onClick={() => onSelectPerson?.(foundPerson.slug)}
     >
       {foundPerson.name}
     </Link>
